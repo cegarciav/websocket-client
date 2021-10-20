@@ -31,7 +31,9 @@ async function apiGet(path, params) {
       Object.keys(params)
         .forEach((key) => url.searchParams.append(key, params[key]));
     }
-    const response = await apiRequester.get(url);
+    const response = await apiRequester.get(url, {
+      headers: { 'Access-Control-Allow-Origin': '*' },
+    });
     return {
       data: response.data,
       statusCode: response.status,
