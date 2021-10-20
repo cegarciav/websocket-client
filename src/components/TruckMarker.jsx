@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Marker,
-  Popup,
+  Tooltip,
 } from 'react-leaflet';
 import Leaflet from 'leaflet';
 import truckImg from '../assets/truck.png';
 
-function TruckMarker({ popupInfo, position }) {
+function TruckMarker({ tooltipInfo, position }) {
   const myIcon = Leaflet.icon({
     iconUrl: truckImg,
     iconSize: [35, 28],
@@ -20,15 +20,15 @@ function TruckMarker({ popupInfo, position }) {
 
   return (
     <Marker position={position} icon={myIcon}>
-      <Popup>
-        {popupInfo}
-      </Popup>
+      <Tooltip>
+        {tooltipInfo}
+      </Tooltip>
     </Marker>
   );
 }
 
 TruckMarker.propTypes = {
-  popupInfo: PropTypes.string.isRequired,
+  tooltipInfo: PropTypes.string.isRequired,
   position: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
 

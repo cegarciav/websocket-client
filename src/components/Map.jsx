@@ -76,8 +76,17 @@ function Map() {
             {
               Object
                 .keys(routes)
-                .map((truckCode) => routes[truckCode][routes[truckCode].length - 1])
-                .map((pos) => <TruckMarker popupInfo="Random text" position={pos} key={`${pos[0]}-${pos[1]}`} />)
+                .map((truckCode) => ({
+                  position: routes[truckCode][routes[truckCode].length - 1],
+                  code: truckCode,
+                }))
+                .map((truckInfo) => (
+                  <TruckMarker
+                    tooltipInfo={`Código: ${truckInfo.code}`}
+                    position={truckInfo.position}
+                    key={truckInfo.code}
+                  />
+                ))
             }
           </MapContainer>
         )}
