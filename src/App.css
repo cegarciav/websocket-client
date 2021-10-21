@@ -45,6 +45,12 @@ body {
   width: 100%;
 }
 
+.col-8 {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+}
+
 .col-7 {
   display: flex;
   flex-direction: column;
@@ -69,12 +75,26 @@ body {
   width: 30%;
 }
 
+.col-2 {
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+}
+
 .h-2 {
   height: 20%;
 }
 
 .h-3 {
   height: 30%;
+}
+
+.h-4 {
+  height: 40%;
+}
+
+.h-6 {
+  height: 60%;
 }
 
 .h-8 {
@@ -84,6 +104,11 @@ body {
 .px-2 {
   padding-left: 2vw;
   padding-right: 2vw;
+}
+
+.py-1 {
+  padding-top: 1vh;
+  padding-bottom: 1vh;
 }
 
 .py-2 {
@@ -109,6 +134,16 @@ body {
 
 .messages {
   height: 55vh;
+  box-sizing: border-box;
+  padding: 1em;
+}
+
+.messages-form {
+  height: 15%;
+}
+
+.sent-messages {
+  height: 85%;
 }
 
 .information {
@@ -163,4 +198,8 @@ button {
 
 button:hover {
   cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
