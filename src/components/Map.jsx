@@ -81,6 +81,62 @@ function Map() {
     }
   }, [lastPosition]);
 
+  const markersDataList = trucksData.map((truck) => ({
+    truckCode: truck.code,
+    markerCodeOrigin: `${truck.origin[0]};${truck.origin[1]}`,
+    origin: truck.origin,
+    markerCodeDestination: `${truck.destination[0]};${truck.destination[1]}`,
+    destination: truck.destination,
+  })).reduce((prevData, currElement) => {
+    let newData;
+    // Save origin messages
+    const newOriginMessage = `Origen de camión ${currElement.truckCode}`;
+    if (Object.keys(prevData).includes(currElement.markerCodeOrigin)) {
+      newData = {
+        ...prevData,
+        [currElement.markerCodeOrigin]: {
+          ...prevData[currElement.markerCodeOrigin],
+          messages: [
+            ...prevData[currElement.markerCodeOrigin].messages,
+            newOriginMessage,
+          ],
+        },
+      };
+    } else {
+      newData = {
+        ...prevData,
+        [currElement.markerCodeOrigin]: {
+          position: currElement.origin,
+          messages: [newOriginMessage],
+        },
+      };
+    }
+
+    // Save destination messages
+    const newDestinationMessage = `Destino de camión ${currElement.truckCode}`;
+    if (Object.keys(prevData).includes(currElement.markerCodeDestination)) {
+      newData = {
+        ...newData,
+        [currElement.markerCodeDestination]: {
+          ...prevData[currElement.markerCodeDestination],
+          messages: [
+            ...prevData[currElement.markerCodeDestination].messages,
+            newDestinationMessage,
+          ],
+        },
+      };
+    } else {
+      newData = {
+        ...newData,
+        [currElement.markerCodeDestination]: {
+          position: currElement.destination,
+          messages: [newDestinationMessage],
+        },
+      };
+    }
+    return newData;
+  }, {});
+
   return (
     <article className="col-6 px-2 py-2">
       <h1>Mapa en vivo flota de camiones</h1>
@@ -107,27 +163,17 @@ function Map() {
                 ))
             }
             {
-              trucksData
-                .map((truck) => (
+              Object
+                .keys(markersDataList)
+                .map((markerKey) => (
                   <Marker
-                    position={truck.origin}
-                    key={`${truck.code}-origin`}
+                    position={markersDataList[markerKey].position}
+                    key={`${markerKey}-marker`}
                   >
                     <Tooltip>
-                      {`Origen de camión ${truck.code}`}
-                    </Tooltip>
-                  </Marker>
-                ))
-            }
-            {
-              trucksData
-                .map((truck) => (
-                  <Marker
-                    position={truck.destination}
-                    key={`${truck.code}-destination`}
-                  >
-                    <Tooltip>
-                      {`Destino de camión ${truck.code}`}
+                      {markersDataList[markerKey].messages.map((message) => (
+                        <p className="my-0" key={`${markerKey}-${message}`}>{message}</p>
+                      ))}
                     </Tooltip>
                   </Marker>
                 ))
