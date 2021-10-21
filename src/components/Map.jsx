@@ -133,6 +133,31 @@ function Map() {
                 ))
             }
             {
+              trucksData
+                .filter((truck) => Object.keys(routes).includes(truck.code))
+                .map((truck) => (
+                  <Polyline
+                    positions={[truck.origin, routes[truck.code][0]]}
+                    pathOptions={{ color: 'white' }}
+                    key={`${truck.code}-origin-polyline`}
+                  />
+                ))
+            }
+            {
+              trucksData
+                .filter((truck) => Object.keys(routes).includes(truck.code))
+                .map((truck) => (
+                  <Polyline
+                    positions={[
+                      truck.destination,
+                      routes[truck.code][routes[truck.code].length - 1],
+                    ]}
+                    pathOptions={{ color: 'white' }}
+                    key={`${truck.code}-destination-polyline`}
+                  />
+                ))
+            }
+            {
               Object
                 .keys(routes)
                 .map((truckCode) => (
