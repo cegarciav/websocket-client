@@ -10,43 +10,48 @@ function TruckCard({
   truckName,
   truckCapacity,
   truckStaff,
-  truckStatus,
+  statusOk,
+  failureType,
 }) {
-  const [originName, setOriginName] = useState('');
-  const [destinationName, setDestinationName] = useState('');
+  const [originName, setOriginName] = useState(null);
+  const [destinationName, setDestinationName] = useState(null);
 
   useEffect(async () => {
-    const originResponse = await apiGet('/', {
-      format: 'json',
-      lat: truckOrigin[0],
-      lon: truckOrigin[1],
-    });
+    if (!originName) {
+      const originResponse = await apiGet('/', {
+        format: 'json',
+        lat: truckOrigin[0],
+        lon: truckOrigin[1],
+      });
 
-    if (originResponse.data && originResponse.statusCode === 200) {
-      setOriginName(originResponse.data.display_name);
+      if (originResponse.data && originResponse.statusCode === 200) {
+        setOriginName(originResponse.data.display_name);
+      }
     }
-  }, [truckOrigin]);
+  }, [truckOrigin[0], truckOrigin[1], originName]);
 
   useEffect(async () => {
-    const originResponse = await apiGet('/', {
-      format: 'json',
-      lat: truckDestination[0],
-      lon: truckDestination[1],
-    });
+    if (!destinationName) {
+      const originResponse = await apiGet('/', {
+        format: 'json',
+        lat: truckDestination[0],
+        lon: truckDestination[1],
+      });
 
-    if (originResponse.data && originResponse.statusCode === 200) {
-      setDestinationName(originResponse.data.display_name);
+      if (originResponse.data && originResponse.statusCode === 200) {
+        setDestinationName(originResponse.data.display_name);
+      }
     }
-  }, [truckDestination]);
+  }, [truckDestination[0], truckDestination[1], destinationName]);
 
-  const statusOk = truckStatus === 'Ok';
+  const statusMessage = statusOk ? 'OK' : `Error en ${failureType}`;
 
   return (
     <div className={`col-4 px-2 my-2 black-border ${statusOk ? 'truck-ok' : 'truck-failure'}`}>
       <h3 className="text-align-center">{`Camión: ${truckCode}`}</h3>
       <div className="row my-2">
         <div className="col-6 truck-card-info">
-          <p className="my-0">{`Estado: ${truckStatus}`}</p>
+          <p className="my-0">{`Estado: ${statusMessage}`}</p>
           <p className="my-0">{`Motor: ${truckEngine}`}</p>
           <p className="my-0">{`Origen: ${originName || truckOrigin}`}</p>
           <p className="my-0">{`Destino: ${destinationName || truckDestination}`}</p>
@@ -84,7 +89,12 @@ TruckCard.propTypes = {
   truckOrigin: PropTypes.arrayOf(PropTypes.number).isRequired,
   truckDestination: PropTypes.arrayOf(PropTypes.number).isRequired,
   truckStaff: PropTypes.arrayOf(PropTypes.any).isRequired,
-  truckStatus: PropTypes.string.isRequired,
+  statusOk: PropTypes.bool.isRequired,
+  failureType: PropTypes.string,
+};
+
+TruckCard.defaultProps = {
+  failureType: '',
 };
 
 export default TruckCard;

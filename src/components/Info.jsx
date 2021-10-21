@@ -8,11 +8,19 @@ function Info() {
   };
 
   const [trucks, setTrucks] = useState([]);
+  const [activeFailures, setActiveFailures] = useState([]);
 
   useEffect(() => {
     getTrucks();
     trucksSocket.on('TRUCKS', (trucksList) => {
       setTrucks(trucksList);
+    });
+  }, []);
+
+  useEffect(() => {
+    getTrucks();
+    trucksSocket.on('FAILURE', (failure) => {
+      setActiveFailures((prevFailures) => [...prevFailures, failure]);
     });
   }, []);
 
@@ -34,18 +42,26 @@ function Info() {
         <main className="col-7">
           <div className="row trucks-info-container">
             {
-              trucks.map((truck) => (
-                <TruckCard
-                  truckCode={truck.code}
-                  truckEngine={truck.engine}
-                  truckOrigin={truck.origin}
-                  truckDestination={truck.destination}
-                  truckName={truck.truck}
-                  truckCapacity={truck.capacity}
-                  truckStaff={truck.staff}
-                  truckStatus="Ok"
-                />
-              ))
+              trucks.map((truck) => {
+                const truckFailures = activeFailures
+                  .filter((failure) => failure.code === truck.code);
+                const truckIsOk = truckFailures.length === 0;
+                const lastFailure = !truckIsOk ? truckFailures[truckFailures.length - 1].source : '';
+                return (
+                  <TruckCard
+                    key={`${truck.code}-card`}
+                    truckCode={truck.code}
+                    truckEngine={truck.engine}
+                    truckOrigin={truck.origin}
+                    truckDestination={truck.destination}
+                    truckName={truck.truck}
+                    truckCapacity={truck.capacity}
+                    truckStaff={truck.staff}
+                    statusOk={truckIsOk}
+                    failureType={lastFailure}
+                  />
+                );
+              })
             }
           </div>
         </main>
