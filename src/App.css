@@ -210,11 +210,11 @@ body {
 }
 
 .truck-ok {
-  background-color: rgb(20, 87, 20);
+  background-color: #145714;
 }
 
 .truck-failure {
-  background-color: rgb(192, 22, 22);
+  background-color: #c01616;
 }
 
 .truck-card-info {

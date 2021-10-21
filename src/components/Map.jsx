@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react';
 import {
   MapContainer,
   TileLayer,
+  Polyline,
 } from 'react-leaflet';
 import TruckMarker from './TruckMarker';
 import trucksSocket from '../socketService';
 
 function Map() {
+  const successColour = '#145714';
+  const failureColour = '#c01616';
   const [trucksData, setTrucksData] = useState([]);
   const [routes, setRoutes] = useState({});
+  const [trucksColours, setTrucksColours] = useState({});
   const [lastCode, setLastCode] = useState(null);
   const [lastPosition, setLastPosition] = useState(null);
   const [centre, setCentre] = useState(null);
@@ -44,6 +48,18 @@ function Map() {
 
       setLastCode(newPosition.code);
       setLastPosition(newPosition.position);
+    });
+  }, []);
+
+  useEffect(() => {
+    trucksSocket.on('FAILURE', (failure) => {
+      setTrucksColours((prevColours) => ({ ...prevColours, [failure.code]: failureColour }));
+    });
+  }, []);
+
+  useEffect(() => {
+    trucksSocket.on('FIX', (newFix) => {
+      setTrucksColours((prevColours) => ({ ...prevColours, [newFix.code]: successColour }));
     });
   }, []);
 
@@ -85,6 +101,17 @@ function Map() {
                     tooltipInfo={`Código: ${truckInfo.code}`}
                     position={truckInfo.position}
                     key={truckInfo.code}
+                  />
+                ))
+            }
+            {
+              Object
+                .keys(routes)
+                .map((truckCode) => (
+                  <Polyline
+                    positions={routes[truckCode]}
+                    pathOptions={{ color: trucksColours[truckCode] || successColour }}
+                    key={`${truckCode}-polyline`}
                   />
                 ))
             }
