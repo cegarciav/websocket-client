@@ -3,6 +3,8 @@ import {
   MapContainer,
   TileLayer,
   Polyline,
+  Marker,
+  Tooltip,
 } from 'react-leaflet';
 import TruckMarker from './TruckMarker';
 import trucksSocket from '../socketService';
@@ -102,6 +104,32 @@ function Map() {
                     position={truckInfo.position}
                     key={truckInfo.code}
                   />
+                ))
+            }
+            {
+              trucksData
+                .map((truck) => (
+                  <Marker
+                    position={truck.origin}
+                    key={`${truck.code}-origin`}
+                  >
+                    <Tooltip>
+                      {`Origen de camión ${truck.code}`}
+                    </Tooltip>
+                  </Marker>
+                ))
+            }
+            {
+              trucksData
+                .map((truck) => (
+                  <Marker
+                    position={truck.destination}
+                    key={`${truck.code}-destination`}
+                  >
+                    <Tooltip>
+                      {`Destino de camión ${truck.code}`}
+                    </Tooltip>
+                  </Marker>
                 ))
             }
             {
