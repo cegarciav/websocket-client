@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import apiGet from '../httpService';
+import trucksSocket from '../socketService';
 
 function TruckCard({
   truckCode,
@@ -13,6 +14,10 @@ function TruckCard({
   statusOk,
   failureType,
 }) {
+  const fixTruck = () => {
+    trucksSocket.emit('FIX', { code: truckCode });
+  };
+
   const [originName, setOriginName] = useState(null);
   const [destinationName, setDestinationName] = useState(null);
 
@@ -71,7 +76,11 @@ function TruckCard({
         <div className="col-4 button-container">
           {!statusOk
             && (
-              <button type="button" className="black-border">
+              <button
+                type="button"
+                className="black-border"
+                onClick={fixTruck}
+              >
                 Arreglar
               </button>
             )}

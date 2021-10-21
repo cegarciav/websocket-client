@@ -18,9 +18,15 @@ function Info() {
   }, []);
 
   useEffect(() => {
-    getTrucks();
     trucksSocket.on('FAILURE', (failure) => {
       setActiveFailures((prevFailures) => [...prevFailures, failure]);
+    });
+  }, []);
+
+  useEffect(() => {
+    trucksSocket.on('FIX', (newFix) => {
+      setActiveFailures((prevFailures) => prevFailures
+        .filter((failure) => failure.code !== newFix.code));
     });
   }, []);
 
