@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import MessageCard from './MessageCard';
 import trucksSocket from '../socketService';
 
 function Chat() {
   const [nickname, setNickname] = useState('');
   const [message, setMessage] = useState('');
+  const [messagesList, setMessagesList] = useState([]);
 
   const sendMessage = () => {
     if (nickname && message) {
@@ -15,6 +17,12 @@ function Chat() {
   useEffect(() => {
     const existingNickname = localStorage.getItem('nickname');
     if (existingNickname) setNickname(existingNickname);
+  }, []);
+
+  useEffect(() => {
+    trucksSocket.on('CHAT', (receivedMessage) => {
+      setMessagesList((prevMessagesList) => [...prevMessagesList, receivedMessage]);
+    });
   }, []);
 
   useEffect(() => {
@@ -38,7 +46,21 @@ function Chat() {
         </div>
       </section>
       <section className="col-10 messages black-border">
-        <div className="row sent-messages">Hello world!</div>
+        <div className="row sent-messages">
+          <ul className="col-10 my-0">
+            {
+              messagesList.map((msg) => (
+                <MessageCard
+                  date={msg.date}
+                  message={msg.message}
+                  name={msg.name}
+                  isMyMessage={msg.name === nickname}
+                  key={`${msg.name}-${msg.date}`}
+                />
+              ))
+            }
+          </ul>
+        </div>
         <div className="row messages-form">
           <input
             type="text"
